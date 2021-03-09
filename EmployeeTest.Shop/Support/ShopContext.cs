@@ -1,4 +1,4 @@
-﻿using EmployeeTest.Shop.Model;
+﻿using OliDemos.Shop.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EmployeeTest.Shop.Services
+namespace OliDemos.Shop.Services
 {
     public class ShopContext : DbContext
     {

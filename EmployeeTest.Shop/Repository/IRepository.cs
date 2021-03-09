@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeTest.Shop.Repository
+namespace OliDemos.Shop.Repository
 {
     public interface IRepository<TEntity> where TEntity : class
     {

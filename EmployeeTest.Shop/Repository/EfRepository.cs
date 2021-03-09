@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EmployeeTest.Shop.Repository
+namespace OliDemos.Shop.Repository
 {
     /// <summary>
     /// The repository <see cref="IRepository{TEntity}"/> implementation for all type entities

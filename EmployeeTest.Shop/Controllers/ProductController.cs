@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EmployeeTest.Shop.Model;
-using EmployeeTest.Shop.Repository;
+using OliDemos.Shop.Model;
+using OliDemos.Shop.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace EmployeeTest.Shop.Controllers
+namespace OliDemos.Shop.Controllers
 {
     [ApiController]
     [Route("[controller]")]
