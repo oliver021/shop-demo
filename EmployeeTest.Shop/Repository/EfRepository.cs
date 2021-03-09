@@ -23,8 +23,14 @@ namespace OliDemos.Shop.Repository
             TypeEntity = typeof(TargetEntity);
         }
 
+        /// <summary>
+        /// Context used by this class to resolve operations
+        /// </summary>
         DbContext Context { get; }
 
+        /// <summary>
+        /// metadata of target entity
+        /// </summary>
         Type TypeEntity { get; }
 
         /// <summary>
@@ -103,18 +109,18 @@ namespace OliDemos.Shop.Repository
         /// <summary>
         /// Get filter and paginate list list 
         /// </summary>
-        /// <param name="Predicate"></param>
+        /// <param name="configure"></param>
         /// <param name="page"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public Task<List<TargetEntity>> Find(Func<IQueryable<TargetEntity>, IQueryable<TargetEntity>> Predicate, int page = 0, int length = 25)
+        public Task<List<TargetEntity>> Find(Func<IQueryable<TargetEntity>, IQueryable<TargetEntity>> configure, int page = 0, int length = 25)
         {
             var collection = Context.Set<TargetEntity>();
             if (page > 0)
             {
                 collection.Skip((page - 1) * length).Take(length);
             }
-            return Predicate(collection).ToListAsync();
+            return configure(collection).ToListAsync();
         }
 
         /// <summary>
@@ -196,6 +202,11 @@ namespace OliDemos.Shop.Repository
             return Context.SaveChangesAsync(default);
         }
 
+        /// <summary>
+        /// Implement this method by <see cref="DbContext.FindAsync(Type, object[])"/>
+        /// </summary>
+        /// <param name="fieldsValue"></param>
+        /// <returns></returns>
         public Task<TargetEntity> FindBy(params object[] fieldsValue)
         {
             return Context.FindAsync(entityType: TypeEntity, fieldsValue)

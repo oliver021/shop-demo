@@ -6,11 +6,13 @@ using OliDemos.Shop.Model;
 using OliDemos.Shop.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NSwag.Annotations;
 
 namespace OliDemos.Shop.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [OpenApiTag("controller", Description = "The product controller to manage this entity")]
     public class ProductController : Controller
     {
         private readonly IRepository<Product> _repository;
@@ -42,9 +44,33 @@ namespace OliDemos.Shop.Controllers
         /// <param name="sortType"></param>
         /// <returns></returns>
         [HttpGet("index")]
-        public async Task<JsonResult> GetAsync([FromRoute] int page, int length)
+        public async Task<List<Product>> GetAsync(int minPrice = 0, int maxPrice = 0, int page = 0, int length = 25)
         {
-            return Json(await _repository.Find(page, length));
+            var result = await _repository.Find(q =>
+            {
+                if (minPrice > 0)
+                {
+                    q = q.Where(p => p.Price >= minPrice);
+                }
+
+                if (maxPrice > 0)
+                {
+                    q = q.Where(p => p.Price <= maxPrice);
+                }
+
+                return q;
+                //lambda end
+            }, page, length);
+
+            if (result.Count < 1)
+            {
+                HttpContext.Response.StatusCode = 404;
+                return null;
+            }
+            else
+            {
+                return result;
+            }
         }
 
         /// <summary>

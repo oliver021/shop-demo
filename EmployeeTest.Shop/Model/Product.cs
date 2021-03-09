@@ -10,5 +10,6 @@ namespace OliDemos.Shop.Model
         public ulong Id { get; set; }
         public DateTime AtCreated { get;  set; }
         public DateTime AtUpdate { get; set; }
+        public int Price { get; set; }
     }
 }
