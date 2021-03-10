@@ -47,7 +47,6 @@ namespace OliDemos.Shop.Services
             }
 
             base.OnModelCreating(builder);
-
             builder.Entity<Product>();
             builder.Entity<Order>();
             builder.Entity<User>();

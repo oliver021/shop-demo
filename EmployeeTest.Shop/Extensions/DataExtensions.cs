@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class DataExtensions
     {
-        public static IServiceCollection AddServiceCollection(
+        public static IServiceCollection AddDataContext(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -31,14 +31,15 @@ namespace Microsoft.Extensions.DependencyInjection
                 var dbSetting = configuration.GetSection("Database")
                 .Get<DatabaseSetting>();
 
-                config.UseMySql(dbSetting.Connection, MySql => {
+                ServerVersion serverVersion =  ServerVersion.FromString(dbSetting.Version);
+                
+                config.UseMySql(dbSetting.Connection, serverVersion, MySql => {
                     MySql.EnableIndexOptimizedBooleanColumns(true);
-                    MySql.ServerVersion(Version.Parse(dbSetting.Version), dbSetting.UseMariaDb ? ServerType.MariaDb : ServerType.MySql);
                     
                     // retry method to ensure that request is executed
                     if(dbSetting.Resilent) MySql.EnableRetryOnFailure();
 
-
+                    MySql.MigrationsAssembly("DemoShop.Migrations");
                 });
             });
             return services;

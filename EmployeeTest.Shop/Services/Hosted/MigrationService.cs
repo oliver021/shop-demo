@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OliDemos.Shop.Model;
 using OliDemos.Shop.Services;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace EmployeeTest.Shop.Services.Hosted
 {
     public class MigrationService : IHostedService
     {
-        private ILogger<MigrationService> _logger;
+        private readonly ILogger<MigrationService> _logger;
         private readonly IServiceScopeFactory _serviceScope;
 
         public MigrationService(ILogger<MigrationService> logger, IServiceScopeFactory serviceScope)
@@ -26,10 +27,49 @@ namespace EmployeeTest.Shop.Services.Hosted
         {
             var scope = _serviceScope.CreateScope();
             var backendDb = scope.ServiceProvider.GetService<ShopContext>();
-            var pedding = await backendDb.MigrationPedding();
+            try
+            {
+                bool created = await backendDb.Database.EnsureCreatedAsync(cancellationToken);
+                var pedding = await backendDb.MigrationPedding(cancellationToken);
+                int count = await ApplyMigrations(backendDb, pedding, cancellationToken);
+                bool seeded = await ApplySeed(backendDb, cancellationToken);
 
+                _logger.LogInformation("Created: {0}\nResume: {1} migrations\nApply Seed: {2}",
+                    created ? "yes" : "no",
+                    count,
+                    seeded ? "yes" : "no");
+            }
+            catch (OperationCanceledException)
+            {
+                // ignore catch
+            }
+            catch (Exception err)
+            {
+                _logger.LogError("Exception is throwed: {0}", err.GetType().Name);
+                _logger.LogError("Message: {0}", err.Message);
+            }
+            finally
+            {
+                await backendDb.DisposeAsync();
+                scope.Dispose();
+            }
+        }
+
+        private async Task<bool> ApplySeed(ShopContext backendDb, CancellationToken cancellationToken)
+        {
+            bool applied = false;
+            bool hasUser = await backendDb.Set<User>().AnyAsync(cancellationToken);
+            if (hasUser)
+            {
+                // do
+                applied = true;
+            }
+            return applied;
+        }
+
+        private async Task<int> ApplyMigrations(ShopContext backendDb, IEnumerable<string> pedding, CancellationToken cancellationToken)
+        {
             int count;
-
             /// si hay migraciones pendientes entonces se lanza el proceso de crear migraciones
             if ((count = pedding.Count()) > 0)
             {
@@ -39,7 +79,7 @@ namespace EmployeeTest.Shop.Services.Hosted
                 // finalmente se ejecuta las migraciones
                 try
                 {
-                    await backendDb.MigrateAsync();
+                    await backendDb.MigrateAsync(cancellationToken);
                     _logger.LogInformation("Realizacion de las migraciones correctamente", count);
                 }
                 catch (Exception err)
@@ -57,8 +97,7 @@ namespace EmployeeTest.Shop.Services.Hosted
                 _logger.LogInformation("No hay migraciones pendientes...");
             }
 
-            await backendDb.DisposeAsync();
-            scope.Dispose();
+            return count;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

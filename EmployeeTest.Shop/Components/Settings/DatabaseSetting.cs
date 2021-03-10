@@ -14,5 +14,6 @@ namespace EmployeeTest.Shop.Components.Settings
         public bool UseMariaDb { get; set; }
         public bool MigrationService { get; set; }
         public bool Resilent { get; set; }
+        public string MigrationAssembly { get; set; }
     }
 }

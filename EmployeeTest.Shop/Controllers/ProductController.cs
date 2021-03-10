@@ -103,7 +103,7 @@ namespace OliDemos.Shop.Controllers
             }
             catch (Exception)
             {
-                // ignore for now
+                // ignore for now just send 400
                 return StatusCode(400);
             }
         }
@@ -120,9 +120,9 @@ namespace OliDemos.Shop.Controllers
             {
                 await _repository.UpdateAsync(data);
             }
-            catch (Exception)
+            catch (Exception err)
             {
-                // ignore for now
+                _logger.LogDebug("Error:{0};\nMessage:{1}", err.GetType().Name, err.Message);
             }
             return NoContent();
         }
@@ -139,9 +139,9 @@ namespace OliDemos.Shop.Controllers
             {
                 await _repository.DeleteAsync(id);
             }
-            catch (Exception)
+            catch (Exception err)
             {
-                // ignore for now
+                _logger.LogDebug("Error:{0};\nMessage:{1}", err.GetType().Name, err.Message);
             }
             return NoContent();
         }

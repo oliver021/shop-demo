@@ -22,6 +22,7 @@ namespace OliDemos.Shop
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSwaggerSupport();
+            services.AddDataContext(Configuration);
             services.AddControllers();
         }
 
