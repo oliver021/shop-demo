@@ -22,6 +22,7 @@ namespace OliDemos.Shop
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSwaggerSupport();
+            services.AddShopSecurity(Configuration);
             services.AddDataContext(Configuration);
             services.AddControllers();
         }
@@ -45,7 +46,8 @@ namespace OliDemos.Shop
 
             app.UseRouting();
 
-            // app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

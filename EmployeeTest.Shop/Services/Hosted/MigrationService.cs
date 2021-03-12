@@ -25,17 +25,16 @@ namespace EmployeeTest.Shop.Services.Hosted
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested(); // check token
             var scope = _serviceScope.CreateScope();
             var backendDb = scope.ServiceProvider.GetService<ShopContext>();
             try
             {
-                bool created = await backendDb.Database.EnsureCreatedAsync(cancellationToken);
                 var pedding = await backendDb.MigrationPedding(cancellationToken);
                 int count = await ApplyMigrations(backendDb, pedding, cancellationToken);
                 bool seeded = await ApplySeed(backendDb, cancellationToken);
 
-                _logger.LogInformation("Created: {0}\nResume: {1} migrations\nApply Seed: {2}",
-                    created ? "yes" : "no",
+                _logger.LogInformation("Resume: {0} migrations\tApply Seed: {1}",
                     count,
                     seeded ? "yes" : "no");
             }
@@ -50,6 +49,7 @@ namespace EmployeeTest.Shop.Services.Hosted
             }
             finally
             {
+                _logger.LogInformation("finalziando el servicio de migraciones");
                 await backendDb.DisposeAsync();
                 scope.Dispose();
             }

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-
+using EmployeeTest.Shop.Services.Hosted;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -27,9 +27,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            services.AddDbContext<DbContext, ShopContext>(config => {
-                var dbSetting = configuration.GetSection("Database")
+            var dbSetting = configuration.GetSection("Database")
                 .Get<DatabaseSetting>();
+
+            services.AddDbContext<DbContext, ShopContext>(config => {
+                
 
                 ServerVersion serverVersion =  ServerVersion.FromString(dbSetting.Version);
                 
@@ -38,10 +40,17 @@ namespace Microsoft.Extensions.DependencyInjection
                     
                     // retry method to ensure that request is executed
                     if(dbSetting.Resilent) MySql.EnableRetryOnFailure();
-
-                    MySql.MigrationsAssembly("DemoShop.Migrations");
                 });
             });
+
+            // simple alias
+            services.AddScoped<ShopContext>(p => (ShopContext)p.GetService<DbContext>());
+
+            if (dbSetting.MigrationService)
+            {
+                // deploy this service
+                services.AddHostedService<MigrationService>();
+            }
             return services;
         }
     }

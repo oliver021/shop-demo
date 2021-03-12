@@ -67,13 +67,14 @@ namespace Microsoft.Extensions.DependencyInjection
                     document.Info.Description = "Este es el API de acceso a datos de la tienda";
                 };
 
-                config.OperationProcessors.Add(new OperationSecurityScopeProcessor("apiKey"));
-                config.DocumentProcessors.Add(new SecurityDefinitionAppender("apiKey", new OpenApiSecurityScheme()
+                config.OperationProcessors.Add(new OperationSecurityScopeProcessor("Bearer"));
+                config.DocumentProcessors.Add(new SecurityDefinitionAppender("Bearer", new OpenApiSecurityScheme()
                 {
                     Type = OpenApiSecuritySchemeType.ApiKey,
-                    Name = "key",
+                    Name = "Authorization",
+                    Scheme = "Bearer",
                     In = OpenApiSecurityApiKeyLocation.Header,
-                    Description = "Token Maestro de que pueba que tienes privilegios de admnistracion",
+                    Description = "Inserte el token JWT para autenticarse",
                     Flow = OpenApiOAuth2Flow.AccessCode
                 }));
             });
