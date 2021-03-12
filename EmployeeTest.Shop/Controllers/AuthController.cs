@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using NSwag.Annotations;
 using OliDemos.Shop.Model;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace OliDemos.Shop.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
+    [OpenApiTag("controller", Description = "The auth controller to login user")]
     public class AuthController : Controller
     {
         private readonly ILogger<AuthController> _logger;
