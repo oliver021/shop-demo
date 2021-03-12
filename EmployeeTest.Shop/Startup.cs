@@ -21,6 +21,7 @@ namespace OliDemos.Shop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddSwaggerSupport();
             services.AddShopSecurity(Configuration);
             services.AddDataContext(Configuration);
@@ -46,6 +47,7 @@ namespace OliDemos.Shop
 
             app.UseRouting();
 
+            // middleware for security system
             app.UseAuthentication();
             app.UseAuthorization();
 

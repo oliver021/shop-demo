@@ -6,14 +6,17 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace OliDemos.Shop.Services
 {
-    public class ShopContext : DbContext
+    public class ShopContext : IdentityDbContext<User, IdentityRole<ulong>, ulong>
     {
-
-        public ShopContext([NotNull] DbContextOptions options) : base(options)
-        { /* not do any action */}
+        public ShopContext(DbContextOptions options) : base(options)
+        {
+        }
 
         /// <summary>
         /// Realiza la migracion hasta la ultima version del esquema
@@ -49,7 +52,6 @@ namespace OliDemos.Shop.Services
             base.OnModelCreating(builder);
             builder.Entity<Product>();
             builder.Entity<Order>();
-            builder.Entity<User>();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, IdentityRole<ulong>>()
                 .AddEntityFrameworkStores<ShopContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();

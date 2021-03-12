@@ -1,2 +1,7 @@
-# shop-demo
-The simple shop api by aspnet-core demo
+# Shop-demo
+
+#### Una simple demostracion de tienda electronica con sencillas entidades
+
+## Empezar
+
+Para probar esta simple demo puede usted

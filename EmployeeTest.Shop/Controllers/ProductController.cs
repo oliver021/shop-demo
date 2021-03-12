@@ -12,9 +12,10 @@ namespace OliDemos.Shop.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [OpenApiTag("controller", Description = "The product controller to manage this entity")]
+    [OpenApiTag("data", Description = "The product controller to manage this entity")]
     public class ProductController : Controller
     {
+        private const string AuthDesc = "Require authentication to do a request";
         private readonly IRepository<Product> _repository;
         private readonly ILogger<ProductController> _logger;
 
@@ -29,6 +30,7 @@ namespace OliDemos.Shop.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("all")]
+        [OpenApiOperation("Bearer", AuthDesc)]
         public async Task<JsonResult> GetAllAsync()
         {
             return Json(await _repository.FindAll());
@@ -44,6 +46,7 @@ namespace OliDemos.Shop.Controllers
         /// <param name="sortType"></param>
         /// <returns></returns>
         [HttpGet("index")]
+        [OpenApiOperation("Bearer", AuthDesc)]
         public async Task<List<Product>> GetAsync(int minPrice = 0, int maxPrice = 0, int page = 0, int length = 25)
         {
             var result = await _repository.Find(q =>
@@ -79,6 +82,7 @@ namespace OliDemos.Shop.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [OpenApiOperation("Bearer", AuthDesc)]
         public async Task<Product> GetByIdAsync([FromRoute] ulong id)
         {
             return await _repository.FindOne(id);
@@ -90,6 +94,7 @@ namespace OliDemos.Shop.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
+        [OpenApiOperation("Bearer", AuthDesc)]
         public async Task<IActionResult> AddAsync([FromBody] Product data)
         {
             try
@@ -114,6 +119,7 @@ namespace OliDemos.Shop.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPut]
+        [OpenApiOperation("Bearer", AuthDesc)]
         public async Task<NoContentResult> UpdateAsync([FromBody] Product data)
         {
             try
@@ -133,6 +139,7 @@ namespace OliDemos.Shop.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
+        [OpenApiOperation("Bearer", AuthDesc)]
         public async Task<NoContentResult> DeleteAsync([FromRoute] ulong id)
         {
             try
