@@ -21,12 +21,13 @@ namespace OliDemos.Shop.Controllers
     {
         private readonly ILogger<AuthController> _logger;
         private readonly UserManager<User> _userManager;
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public AuthController(ILogger<AuthController> _logger, IConfiguration _configuration, UserManager<User> _userManager)
         {
             this._logger = _logger;
             this._userManager = _userManager;
+            this._configuration = _configuration;
         }
 
         [HttpPost("token")]
@@ -40,6 +41,7 @@ namespace OliDemos.Shop.Controllers
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -48,7 +50,7 @@ namespace OliDemos.Shop.Controllers
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSecurity:Secret"]));
 
                 var token = new JwtSecurityToken(
                     expires: DateTime.Now.AddHours(3),
