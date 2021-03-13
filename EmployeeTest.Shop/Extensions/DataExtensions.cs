@@ -51,6 +51,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 // deploy this service
                 services.AddHostedService<MigrationService>();
             }
+
+            // data services for extending repositories
+            services.AddScoped<ProductService>();
+            services.AddScoped<OrderService>();
             return services;
         }
     }
