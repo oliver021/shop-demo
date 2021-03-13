@@ -145,7 +145,7 @@ namespace OliDemos.Shop.Repository
             {
                 return data;
             }
-            throw new InvalidCastException();
+            return null;
         }
 
 
@@ -165,7 +165,7 @@ namespace OliDemos.Shop.Repository
                 Context.Entry(data).State = EntityState.Modified;
                 await Context.SaveChangesAsync();
             }
-            throw new InvalidCastException();
+            return null;
         }
 
         /// <summary>
