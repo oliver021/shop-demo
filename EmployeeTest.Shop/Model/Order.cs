@@ -18,6 +18,6 @@ namespace OliDemos.Shop.Model
 
         public int Count { get; set; }
 
-        public OrderStatus Status { get; set; } = OrderStatus.Pending;
+        public OrderStatus Status { get; set; } = OrderStatus.Created;
     }
 }

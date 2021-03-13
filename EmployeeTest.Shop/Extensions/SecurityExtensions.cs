@@ -10,6 +10,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -33,22 +36,22 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddDefaultTokenProviders();
 
             // low requirements for security options
-            services.Configure<IdentityOptions>(options => {        
-                options.Password.RequireDigit = false;       
-                options.Password.RequireLowercase = false;   
-                options.Password.RequireNonAlphanumeric = false; 
-                options.Password.RequireUppercase = false;      
-                options.Password.RequiredLength = 6;        
+            services.Configure<IdentityOptions>(options => {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 1;
-                                                                    
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(5); 
-                options.Lockout.MaxFailedAccessAttempts = 5;       
+
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
-                                                                   
-                options.User.RequireUniqueEmail = false;    
+
+                options.User.RequireUniqueEmail = false;
             });
 
-             // add auth service
+            // add auth service
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -57,14 +60,14 @@ namespace Microsoft.Extensions.DependencyInjection
             })
             .AddJwtBearer(options =>
             {
-                    options.SaveToken = true;
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSecurity:Secret"]))
-                    };
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSecurity:Secret"]))
+                };
             });
 
             return services;

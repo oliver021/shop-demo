@@ -2,10 +2,8 @@
 {
     public enum OrderStatus
     {
-        Pending,
-        Accepted,
-        Payment,
-        Complete,
+        Created,
+        Confirmed,
         Canceled
     }
 }

@@ -48,7 +48,6 @@ namespace OliDemos.Shop.Services
             {
                 throw new ArgumentNullException(nameof(builder));
             }
-
             base.OnModelCreating(builder);
             builder.Entity<Product>();
             builder.Entity<Order>();
