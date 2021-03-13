@@ -2,8 +2,8 @@
 {
     public enum OrderStatus
     {
-        Created,
-        Confirmed,
-        Canceled
+        created,
+        confirmed,
+        canceled
     }
 }

@@ -135,20 +135,42 @@ namespace OliDemos.Shop.Controllers
         [HttpPost("purchase")]
         [Authorize(Roles = "Client")]
         [OpenApiOperation("Bearer", AuthDesc)]
+        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> PurshaseAsync([FromBody] OrderRequest req)
         {
             try
             {
                 var result = await _serviceProduct.PurchaseAsync(product: req.Product,
-                    user: default,
+                    user: HttpContext.GetUserId(),
                     count: req.Count);
                 return StatusCode(201, new
                 {
                    orderId = result
                 });
             }
-            catch (Exception)
+            catch (InvalidOperationException err)
+            when(err.Message.Equals(ProductService.NotStockMessage))
             {
+                return StatusCode(StatusCodes.Status406NotAcceptable, new
+                {
+                    message = "No hay stock para la cantidad solicitada"
+                });
+            }
+            catch (InvalidOperationException err)
+            when (err.Message.Equals(ProductService.ProductNotFound))
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new
+                {
+                    message = "No hay el producto solicitado"
+                });
+            }
+            catch (Exception err)
+            {
+                _logger.LogDebug(err.Message);
                 // ignore for now just send 400
                 return StatusCode(400);
             }

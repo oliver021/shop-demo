@@ -16,8 +16,8 @@ namespace OliDemos.Shop.Services
 
         public async Task UpdateAsync(OrderUpdate update)
         {
-            var order = await FindOne(update);
-            order.Status = update.NewStatus;
+            var order = await FindOne(update.Id);
+            order.Status = (OrderStatus)Enum.Parse(typeof(OrderStatus), update.NewStatus);
             await UpdateAsync(order);
         }
     }

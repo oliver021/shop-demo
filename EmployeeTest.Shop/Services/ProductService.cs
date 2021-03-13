@@ -10,6 +10,9 @@ namespace OliDemos.Shop.Services
 {
     public class ProductService : EfRepository<Product>
     {
+        public const string NotStockMessage = "not stock";
+        public const string ProductNotFound = "product not found";
+
         public ProductService(DbContext context) : base(context)
         {
         }
@@ -63,12 +66,33 @@ namespace OliDemos.Shop.Services
         {
             Order order;
             var target = await FindOne(product);
-            target.Orders.Add(order = new Order { 
-                ProductId = product,
+
+            if (target is null)
+            {
+                throw new InvalidOperationException(ProductNotFound);
+            }
+
+            if (count > target.Stock)
+            {
+                throw new InvalidOperationException(NotStockMessage);
+            }
+
+            target.Stock -= count;
+
+            // new order from client request
+            order = new Order
+            {
                 UserId = user,
                 AtMoment = DateTime.Now,
                 Count = count,
-            });
+            };
+
+            target.Orders = new List<Order>()
+            {
+                // declare order with relationship of this product
+                order
+            };
+
             await UpdateAsync(target);
             return order.Id;
         }

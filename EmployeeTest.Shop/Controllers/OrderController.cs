@@ -30,8 +30,8 @@ namespace OliDemos.Shop.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromBody] uint order)
+        [HttpDelete("{order}")]
+        public async Task<IActionResult> Delete([FromRoute] uint order)
         {
             await service.DeleteAsync(order);
             return NoContent();

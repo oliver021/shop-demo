@@ -12,6 +12,6 @@ namespace OliDemos.Shop.Model
         public uint Id { get; set; }
 
         [Required]
-        public OrderStatus NewStatus { get; set; }
+        public string NewStatus { get; set; }
     }
 }
