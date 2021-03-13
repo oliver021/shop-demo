@@ -13,5 +13,12 @@ namespace OliDemos.Shop.Services
         public OrderService(DbContext context) : base(context)
         {
         }
+
+        public async Task UpdateAsync(OrderUpdate update)
+        {
+            var order = await FindOne(update);
+            order.Status = update.NewStatus;
+            await UpdateAsync(order);
+        }
     }
 }
