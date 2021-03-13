@@ -9,7 +9,9 @@ namespace OliDemos.Shop.Model
     public class User : IdentityUser<ulong>
     {
         public string FirstName { get; set; }
-        public ulong LastName { get; set; }
+        public string LastName { get; set; }
         public string Password { get; set; }
+
+        public List<Order> Orders { get; set; }
     }
 }

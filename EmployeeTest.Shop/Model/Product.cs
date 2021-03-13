@@ -17,5 +17,10 @@ namespace OliDemos.Shop.Model
         public DateTime AtCreated { get;  set; }
         public DateTime AtUpdate { get; set; }
         public int Price { get; set; }
+
+        public User User { get; set; }
+        public ulong UserId { get; set; }
+
+        public List<Order> Orders { get; set; }
     }
 }
